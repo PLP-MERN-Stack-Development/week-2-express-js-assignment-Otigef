@@ -37,27 +37,207 @@ You will:
 - npm or yarn
 - Postman, Insomnia, or curl for API testing
 
+# Product API
+
+A simple Express.js REST API for managing products with API key authentication.
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v14 or higher)
+- [npm](https://www.npmjs.com/)
+
+### Installation
+
+1. Clone or download this repository.
+2. Open a terminal in the project directory.
+3. Install dependencies:
+
+   ```
+   npm install
+   ```
+
+### Running the Server
+
+Start the server with:
+
+```
+node server.js
+```
+
+The server will run on [http://localhost:3000](http://localhost:3000) by default.
+
+---
+
+## API Key Authentication
+
+All `/api/products` endpoints require an API key in the request header:
+
+```
+x-api-key: secret-api-key-123
+```
+
+---
+
 ## API Endpoints
 
-The API will have the following endpoints:
+### 1. Get All Products
 
-- `GET /api/products`: Get all products
-- `GET /api/products/:id`: Get a specific product
-- `POST /api/products`: Create a new product
-- `PUT /api/products/:id`: Update a product
-- `DELETE /api/products/:id`: Delete a product
+**Request:**
+```
+GET /api/products
+Headers:
+  x-api-key: secret-api-key-123
+```
 
-## Submission
+**Response:**
+```json
+{
+  "id": "uuid",
+  "name": "Laptop",
+  "description": "High-performance laptop with 16GB RAM",
+  "price": 1200,
+  "category": "electronics",
+  "inStock": true
+}
+```
 
-Your work will be automatically submitted when you push to your GitHub Classroom repository. Make sure to:
+---
 
-1. Complete all the required API endpoints
-2. Implement the middleware and error handling
-3. Document your API in the README.md
-4. Include examples of requests and responses
+### 2. Get Product by ID
 
-## Resources
+**Request:**
+```
+GET /api/products/{id}
+Headers:
+  x-api-key: secret-api-key-123
+```
 
-- [Express.js Documentation](https://expressjs.com/)
-- [RESTful API Design Best Practices](https://restfulapi.net/)
-- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) 
+**Response (200):**
+```json
+{
+  "id": "uuid",
+  "name": "Laptop",
+  "description": "High-performance laptop with 16GB RAM",
+  "price": 1200,
+  "category": "electronics",
+  "inStock": true
+}
+```
+
+**Response (404):**
+```json
+{ "message": "Product not found" }
+```
+
+---
+
+### 3. Create a Product
+
+**Request:**
+```
+POST /api/products
+Headers:
+  x-api-key: secret-api-key-123
+Body (JSON):
+{
+  "name": "Phone",
+  "description": "Latest smartphone",
+  "price": 800,
+  "category": "electronics",
+  "inStock": true
+}
+```
+
+**Response (201):**
+```json
+{
+  "id": "uuid",
+  "name": "Phone",
+  "description": "Latest smartphone",
+  "price": 800,
+  "category": "electronics",
+  "inStock": true
+}
+```
+
+**Response (400):**
+```json
+{ "message": "Missing required fields" }
+```
+
+---
+
+### 4. Update a Product
+
+**Request:**
+```
+PUT /api/products/{id}
+Headers:
+  x-api-key: secret-api-key-123
+Body (JSON):
+{
+  "name": "Updated Name",
+  "price": 1000
+}
+```
+
+**Response (200):**
+```json
+{
+  "id": "uuid",
+  "name": "Updated Name",
+  "description": "High-performance laptop with 16GB RAM",
+  "price": 1000,
+  "category": "electronics",
+  "inStock": true
+}
+```
+
+**Response (404):**
+```json
+{ "message": "Product not found" }
+```
+
+---
+
+### 5. Delete a Product
+
+**Request:**
+```
+DELETE /api/products/{id}
+Headers:
+  x-api-key: secret-api-key-123
+```
+
+**Response (204):**
+No content.
+
+**Response (404):**
+```json
+{ "message": "Product not found" }
+```
+
+---
+
+## Error Handling
+
+- `401 Unauthorized` if API key is missing or invalid.
+- `404 Not Found` for unknown endpoints or missing products.
+- `400 Bad Request` for validation errors.
+- `500 Internal Server Error` for unexpected errors.
+
+---
+
+## Example cURL Requests
+
+**Get all products:**
+```sh
+curl -H "x-api-key: secret-api-key-123" http://localhost:3000/api/products
+```
+
+**Create a product:**
+```sh
+curl -X POST -H "Content-Type: application/json" -H "x-api-key: secret-api-key-123" -d '{"name":"Phone","description":"Latest smartphone","price":800,"category":"electronics","inStock":true}' http://localhost:3000/api/products
+```
